@@ -3,7 +3,8 @@ module.exports = function(grunt) {
     jshint: {
       files: [ 'Gruntfile.js', 'app/*.js', 'app/services/*.js', 'app/public/scripts/*.js', 'test/**/*.js', '!test/**/scenario_*.js' ],
       options: {
-        expr: true
+        expr: true,
+        esversion: 6
       }
     },
     mochaTest: {
@@ -25,12 +26,18 @@ module.exports = function(grunt) {
     watch: {
       files: ['<%= jshint.files %>'],
       tasks: ['jshint', 'mochaTest:watch']
+    },
+    bump: {
+      options: {
+        pushTo: 'origin'
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-mocha-test');
+  grunt.loadNpmTasks('grunt-bump');
 
   grunt.registerTask('ci', ['jshint', 'mochaTest:test' ]);
   grunt.registerTask('default', ['ci']);
