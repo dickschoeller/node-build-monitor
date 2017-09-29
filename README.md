@@ -19,7 +19,7 @@ __Here's a demo:__ http://builds.mspi.es <sub><sup>([other themes](#theming-supp
 - [Travis CI](https://travis-ci.org/) <sub><sup>([Configuration](#travis-ci))</sup></sub>
 - [Jenkins](http://jenkins-ci.org/) <sub><sup>([Configuration](#jenkins))</sup></sub>
 - [TeamCity](https://www.jetbrains.com/teamcity/) <sub><sup>([Configuration](#teamcity))</sup></sub>
-- [Visual Studio Online](http://www.visualstudio.com/) <sub><sup>([Configuration](#visual-studio-online))</sup></sub>
+- [Visual Studio Team Services](http://www.visualstudio.com/) <sub><sup>([Configuration](#visual-studio-team-services))</sup></sub>
 - [Team Foundation Server 2013 and lower (on-premise) via tfs-proxy](https://github.com/marcells/tfs-proxy) <sub><sup>([Configuration](#team-foundation-server-2013-and-lower-on-premise))</sup></sub>
 - [Team Foundation Server 2015/2017 (on-premise) ](https://www.visualstudio.com/en-us/products/tfs-overview-vs.aspx) <sub><sup>([Configuration](#team-foundation-server-20152017-on-premise))</sup></sub>
 - [GitLab (on-premise, beta)](https://gitlab.com) <sub><sup>([Configuration](#gitlab-on-premise-beta))</sup></sub>
@@ -32,14 +32,18 @@ Jump to the [configuration documentation](#configuration) and see how the servic
 
 ### Quickstart
 
-You have two options:
+You have three options:
 
+- Run node-build-monitor [by downloading the standalone version](#run-the-standalone-version-easiest-way) <sub><sup>(easiest way to run it)</sup></sub>
 - Run node-build-monitor [manually with node](#run-it-manually-during-development) <sub><sup>(preferred during development)</sup></sub>
-- Run node-build-monitor [with Docker](#run-it-with-docker-in-production) <sub><sup>(preferred when you just want to run it)</sup></sub>
+- Run node-build-monitor [with Docker](#run-it-with-docker-in-production) <sub><sup>(preferred in production)</sup></sub>
 
 ### Configuration
 
-The build monitor is configured in the file `config.json` in the app directory.
+The build monitor configuration can be placed in one of the following locations:
+1. `%HomeDirectory%/node-build-monitor-config.json`
+2. `%PathOfExecutable%/config.json` (only for the standalone version)
+3. `app/config.json`
 
 ```json
 {
@@ -137,7 +141,11 @@ Supports the [TeamCity](https://www.jetbrains.com/teamcity/) build service.
   "name": "TeamCity",
   "configuration": {
     "url": "http://teamcity_username:teamcity_password@teamcity-server:8111",
-    "buildConfigurationId": "TeamCityProject_TeamCityBuildConfiguration"
+    "buildConfigurationId": "TeamCityProject_TeamCityBuildConfiguration",
+    "branch": "master",
+    "authentication": "ntlm",
+    "username": "teamcity_username",
+    "password": "teamcity_password"
   }
 }
 ```
@@ -146,10 +154,14 @@ Supports the [TeamCity](https://www.jetbrains.com/teamcity/) build service.
 |-------------------------|-----------------------------------------------------------------------------------------
 | `url`                   | The url to the TeamCity server (including the credentials without a trailing backslash).
 | `buildConfigurationId`  | The id of the TeamCity build configuration
+| `branch`                | The name of branch that needs to be monitored. Will monitor all branches if not specified.
+| `authentication`        | This option is only required if using 'ntlm' other option have no meaning
+| `username`              | Your TeamCity user name (if required)
+| `password`              | Your TeamCity password (if required)
 
-#### Visual Studio Online
+#### Visual Studio Team Services
 
-Supports the [Visual Studio Online](http://www.visualstudio.com/) build service.
+Supports the [Visual Studio Team Services](http://www.visualstudio.com/) build service.
 
 ```json
 {
@@ -163,12 +175,13 @@ Supports the [Visual Studio Online](http://www.visualstudio.com/) build service.
 }
 ```
 
-| Setting       | Description
-|---------------|----------------------------------------------------------------------------------------------------------------------------------------
-| `collection`  | The name of the collection, which builds are displayed (selecting single team projects or build definitions is not supported currently)
-| `accountname` | Your Visual Studio Online account name (https://[accountname].visualstudio.com)
-| `username`    | Your Visual Studio Online user name (alternate credentials *User name (secondary)*) see info below
-| `password`    | Your Visual Studio Online password (alternate credentials *Password*) see info below
+| Setting         | Description
+|-----------------|----------------------------------------------------------------------------------------------------------------------------------------
+| `collection`    | The name of the collection, which builds are displayed (selecting single team projects or build definitions is not supported currently)
+| `accountname`   | Your Visual Studio Online account name (https://[accountname].visualstudio.com)
+| `authentication`| This option is only required if using 'ntlm' other option have no meaning
+| `username`      | Your Visual Studio Online user name (alternate credentials *User name (secondary)*) see info below
+| `password`      | Your Visual Studio Online password (alternate credentials *Password*) see info below
 
 To create the alternate credentials, please do the following steps:
 
@@ -196,12 +209,13 @@ Supports an on-premise Microsoft Team Foundation Server via the [tfs-proxy](http
 }
 ```
 
-| Setting       | Description
-|---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-| `tfsProxyUrl` | The url to the [tfs-proxy](https://github.com/marcells/tfs-proxy). If you use Docker to run node-build-monitor and tfs-proxy, this setting can be omitted (see details below in the Docker section).
-| `url`         | The full Team Collection Url, which builds are displayed (selecting single team projects or build definitions is not supported currently)
-| `username`    | User with permission to query build details
-| `password`    | The password for the user
+| Setting          | Description
+|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| `tfsProxyUrl`    | The url to the [tfs-proxy](https://github.com/marcells/tfs-proxy). If you use Docker to run node-build-monitor and tfs-proxy, this setting can be omitted (see details below in the Docker section).
+| `url`            | The full Team Collection Url, which builds are displayed (selecting single team projects or build definitions is not supported currently)
+| `authentication` | This option is only required if using 'ntlm' other option have no meaning
+| `username`       | User with permission to query build details
+| `password`       | The password for the user
 
 #### Team Foundation Server 2015/2017 (on-premise)
 
@@ -218,11 +232,12 @@ Supports an on-premise Microsoft Team Foundation Server 2015/2017 (and later).
 }
 ```
 
-| Setting       | Description
-|---------------|-------------------------------------------------------------------------------------
-| `url`         | The full Team Collection Url, including the TeamProject, which builds are displayed
-| `username`    | User with permission to query build details
-| `password`    | The password for the user (if using TFS 2017 see notes below)
+| Setting         | Description
+|-----------------|-------------------------------------------------------------------------------------
+| `url`           | The full Team Collection Url, including the TeamProject, which builds are displayed
+| `authentication`| This option is only required if using 'ntlm' other option have no meaning
+| `username`      | User with permission to query build details
+| `password`      | The password for the user (if using TFS 2017 see notes below)
 
 _Important_: For TFS 2017 you have to [create a personal access token](https://www.visualstudio.com/en-us/docs/setup-admin/team-services/use-personal-access-tokens-to-authenticate). It only needs
 the permission to read builds. Please use your username and the generated token as the password.
@@ -238,29 +253,27 @@ Supports an on-premise [GitLab](http://gitlab.com) Community Edition/Enterprise 
   "configuration": {
     "url": "http://gitlab.example.com:8080",
     "token": "secret_user_token",
+    "additional_query": "&search=gitlab-org&starred=true",
     "slugs": [
-      "gitlab-org/gitlab-ci-multi-runner"
-    ],
-    "intervals": {
-      "disabled": 3600000,
-      "empty": 60000,
-      "default": 60000
-    },
-    "debug": true
+      {
+        "project": "gitlab-org/gitlab-ci-multi-runner",
+        "ref": "master"
+      }
+    ]
   }
 }
 ```
 
-| Setting       | Description
-|---------------|-------------------------------------------------------------------------------------------------------------
-| `url`         | GitLab server http(s) address string
-| `token`       | Secret token string for the existing user to be used to authenticate against GitLab REST API
-| `slugs`       | List of project slugs to display and check for builds. Defaults to `*/*` for all projects you have access to
-| `intervals`   | How often (in integer of milliseconds) ...
-| `.disabled`   | ... to poll all GitLab projects, including projects with builds disabled, for new builds
-| `.empty`      | ... to poll GitLab projects with builds enabled, but still without any builds yet, for new builds
-| `.default`    | ... to poll GitLab projects with existing builds
-| `debug`       | Boolean to run GitLab plugin in verbose mode
+| Setting            | Description
+|--------------------|-------------------------------------------------------------------------------------------------------------
+| `url`              | GitLab server http(s) address string
+| `token`            | Secret token string for the existing user to be used to authenticate against GitLab REST API
+| `slugs`            | List of project slugs to display and check for builds. Defaults to `*/*` for all projects you have access to. Optional 'ref' attribute can be used to specify the branch.
+| `intervals`        | How often (in integer of milliseconds) ...
+| `additional_query` | Add [additional query parameters](https://gitlab.com/help/api/projects.md) so not too many projects are fetched. 
+
+Because API V4 returns **all** internal and public projects by default, you propably
+want to set `additional_query` as well. Good choices could be `&owned=true` or `&membership=true`.  
 
 #### BuddyBuild
 
@@ -282,8 +295,8 @@ Supports [BuddyBuild](https://buddybuild.com/) build service
 
 | Setting          | Description
 |------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-| `project_name`   | Label of the project name, normally IOS or Android.
-| `app_id`         | BuddyBuild Application ID
+| `project_name`   | Label of the project name, normally IOS or Android. Required only, if your app_id is provided.
+| `app_id`         | BuddyBuild Application ID. Leave empty to get all the builds for your user token.
 | `url`            | BuddyBuild Build Query url
 | `access_token`   | Secret token string for the existing user to be used to authenticate against BuddyBuild REST API (if `BUILDBUDDY_ACCESS_TOKEN` environment variable is set, this setting is overwritten)
 | `build_id`       | Leave empty to get the latest build. Provide the build ID to query that specific build.
@@ -311,6 +324,23 @@ Supports [Bamboo](https://www.atlassian.com/software/bamboo) build service
 | `planKey`        | Plan-Key
 | `username`       | HTTP-Basic-Auth Username (optional)
 | `password`       | HTTP-Basic-Auth Password (optional)
+
+### Run the standalone version (easiest way)
+
+1. Download the [latest release](https://github.com/marcells/node-build-monitor/releases/latest) for Linux (x64), MacOS (x64) or Windows (x64)
+2. Place a file `config.json` next to the executable (see the description of the file in the [configuration section](#configuration) above)
+3. Run the executable
+4. Open your browser and navigate to [http://localhost:3000](http://localhost:3000) (switch to fullscreen for the best experience)
+
+### Run it manually (during development)
+
+1. Pull the repository
+2. Run `npm install`
+3. Place a file `config.json` in the app folder (see the description of the file in the [configuration section](#configuration) above)
+4. Run the build monitor with `node app/app.js`
+5. Open your browser and navigate to [http://localhost:3000](http://localhost:3000) (switch to fullscreen for the best experience)
+
+Run `grunt` to execute the tests and check the source code with [JSHint](http://jshint.com/).
 
 ### Run it with Docker (in production)
 
@@ -390,25 +420,16 @@ Ensure that you omit the `tfsProxyUrl` setting in your `config.json`, so that it
 
 Now open your browser and navigate to [http://localhost:12345](http://localhost:12345) to see your running or finished builds. Switch to fullscreen for the best experience.
 
-### Run it manually (during development)
-
-1. Pull the repository
-2. Run `npm install`
-3. Place a file `config.json` in the app folder (see the description of the file in the configuration section above)
-4. Run the build monitor with `node app/app.js`
-5. Open your browser and navigate to [http://localhost:3000](http://localhost:3000) (switch to fullscreen for the best experience)
-
-Run `grunt` to execute the tests and check the source code with [JSHint](http://jshint.com/).
-
 ### Theming support
 
 Here you can check out the existing themes. Feel free to [add your own](#creating-a-new-theme) and make a pull request. It can be done very easy.
 
-| Theme   | Description                                                                        | Preview                                   |
-|---------|------------------------------------------------------------------------------------|-------------------------------------------|
-| default | Works best on bigger screens with a high resolution                                | [Demo](http://builds.mspi.es)             |
-| list    | Displays the builds as a list. Should also work on devices with a lower resolution | [Demo](http://builds.mspi.es?theme=list)  |
-| lingo   | Describes the build status in form of a hand-written sentence                      | [Demo](http://builds.mspi.es?theme=lingo) |
+| Theme   | Description                                                                        | Preview
+|---------|------------------------------------------------------------------------------------|-------------------------------------------
+| default | Works best on bigger screens with a high resolution                                | [Demo](http://builds.mspi.es)
+| lowres  | Works best on screens with a lower resolution                                      | [Demo](http://builds.mspi.es?theme=lowres)
+| list    | Displays the builds as a list, instead of tiles                                    | [Demo](http://builds.mspi.es?theme=list)
+| lingo   | Describes the build status in form of a hand-written sentence                      | [Demo](http://builds.mspi.es?theme=lingo)
 
 You can switch the themes by the url parameter `theme`.
 e.g.: [http://localhost:3000?theme=list](http://localhost:3000?theme=list)
