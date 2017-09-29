@@ -1,23 +1,77 @@
 {
-  "monitor": {
-    "interval": 5000,
-    "numberOfBuilds": 12,
-    "latestBuildOnly": false,
-    "sortOrder": "date",
-    "debug": true
-  },
-  "services": [
-    {
-      "name": "Travis",
-      "configuration": {
-        "slug": "marcells/bloggy"
-      }
+    "monitor": {
+	"interval": 5000,
+	"numberOfBuilds": 12,
+	"latestBuildOnly": true,
+	"sortOrder": "date",
+	"debug": false
     },
-    {
-      "name": "Travis",
-      "configuration": {
-        "slug": "marcells/node-build-monitor"
-      }
-    }
-  ]
+    "services": [
+	{
+	    "name": "Travis",
+	    "configuration": {
+		"slug": "dickschoeller/gedbrowser"
+	    }
+	},
+	{
+	    "name": "Jenkins",
+	    "configuration": {
+		"url": "http://www.schoellerfamily.org/jenkins",
+		"username": "schoeller@comcast.net",
+		"password": "Pad3span",
+		"job": "gedbrowser",
+		"options": {
+		    "strictSSL": false
+		}
+	    }
+	},
+	{
+	    "name": "Jenkins",
+	    "configuration": {
+		"url": "http://www.schoellerfamily.org/jenkins",
+		"username": "schoeller@comcast.net",
+		"password": "Pad3span",
+		"job": "gedbrowser-development",
+		"options": {
+		    "strictSSL": false
+		}
+	    }
+	},
+	{
+	    "name": "Jenkins",
+	    "configuration": {
+		"url": "http://www.schoellerfamily.org/jenkins",
+		"username": "schoeller@comcast.net",
+		"password": "Pad3span",
+		"job": "gedbrowser-pull",
+		"options": {
+		    "strictSSL": false
+		}
+	    }
+	},
+	{
+	    "name": "Jenkins",
+	    "configuration": {
+		"url": "http://www.schoellerfamily.org/jenkins",
+		"username": "schoeller@comcast.net",
+		"password": "Pad3span",
+		"job": "gedbrowser-selenium",
+		"options": {
+		    "strictSSL": false
+		}
+	    }
+	},
+	{
+	    "name": "Jenkins",
+	    "configuration": {
+		"url": "http://www.schoellerfamily.org/jenkins",
+		"username": "schoeller@comcast.net",
+		"password": "Pad3span",
+		"job": "gedbrowser-selenium-development",
+		"options": {
+		    "strictSSL": false
+		}
+	    }
+	}
+    ]
 }
