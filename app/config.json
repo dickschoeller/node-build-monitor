@@ -16,7 +16,7 @@
 	{
 	    "name": "Jenkins",
 	    "configuration": {
-		"url": "http://www.schoellerfamily.org/jenkins",
+		"url": "https://www.schoellerfamily.org/jenkins",
 		"username": "schoeller@comcast.net",
 		"password": "Pad3span",
 		"job": "gedbrowser",
@@ -28,7 +28,7 @@
 	{
 	    "name": "Jenkins",
 	    "configuration": {
-		"url": "http://www.schoellerfamily.org/jenkins",
+		"url": "https://www.schoellerfamily.org/jenkins",
 		"username": "schoeller@comcast.net",
 		"password": "Pad3span",
 		"job": "gedbrowser-development",
@@ -40,34 +40,10 @@
 	{
 	    "name": "Jenkins",
 	    "configuration": {
-		"url": "http://www.schoellerfamily.org/jenkins",
+		"url": "https://www.schoellerfamily.org/jenkins",
 		"username": "schoeller@comcast.net",
 		"password": "Pad3span",
 		"job": "gedbrowser-pull",
-		"options": {
-		    "strictSSL": false
-		}
-	    }
-	},
-	{
-	    "name": "Jenkins",
-	    "configuration": {
-		"url": "http://www.schoellerfamily.org/jenkins",
-		"username": "schoeller@comcast.net",
-		"password": "Pad3span",
-		"job": "gedbrowser-selenium",
-		"options": {
-		    "strictSSL": false
-		}
-	    }
-	},
-	{
-	    "name": "Jenkins",
-	    "configuration": {
-		"url": "http://www.schoellerfamily.org/jenkins",
-		"username": "schoeller@comcast.net",
-		"password": "Pad3span",
-		"job": "gedbrowser-selenium-development",
 		"options": {
 		    "strictSSL": false
 		}
