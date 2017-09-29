@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/marcells/node-build-monitor.svg?branch=master)](https://travis-ci.org/marcells/node-build-monitor)
 [![Code Climate](https://codeclimate.com/github/marcells/node-build-monitor/badges/gpa.svg)](https://codeclimate.com/github/marcells/node-build-monitor)
 [![Dependency Status](https://david-dm.org/marcells/node-build-monitor.svg)](https://david-dm.org/marcells/node-build-monitor)
+[![Known Vulnerabilities](https://snyk.io/test/github/marcells/node-build-monitor/badge.svg)](https://snyk.io/test/github/marcells/node-build-monitor)
 [![Stories in Ready](https://badge.waffle.io/marcells/node-build-monitor.png?label=ready&title=Ready)](https://waffle.io/marcells/node-build-monitor)
 
 ## node-build-monitor
@@ -19,10 +20,11 @@ __Here's a demo:__ http://builds.mspi.es <sub><sup>([other themes](#theming-supp
 - [Jenkins](http://jenkins-ci.org/) <sub><sup>([Configuration](#jenkins))</sup></sub>
 - [TeamCity](https://www.jetbrains.com/teamcity/) <sub><sup>([Configuration](#teamcity))</sup></sub>
 - [Visual Studio Online](http://www.visualstudio.com/) <sub><sup>([Configuration](#visual-studio-online))</sup></sub>
-- [Team Foundation Server (on-premise) via tfs-proxy](https://github.com/marcells/tfs-proxy) <sub><sup>([Configuration](#team-foundation-server-on-premise))</sup></sub>
-- [Team Foundation Server 2015 (on-premise) ](https://www.visualstudio.com/en-us/products/tfs-overview-vs.aspx) <sub><sup>([Configuration](#team-foundation-server-2015-on-premise))</sup></sub>
+- [Team Foundation Server 2013 and lower (on-premise) via tfs-proxy](https://github.com/marcells/tfs-proxy) <sub><sup>([Configuration](#team-foundation-server-2013-and-lower-on-premise))</sup></sub>
+- [Team Foundation Server 2015/2017 (on-premise) ](https://www.visualstudio.com/en-us/products/tfs-overview-vs.aspx) <sub><sup>([Configuration](#team-foundation-server-20152017-on-premise))</sup></sub>
 - [GitLab (on-premise, beta)](https://gitlab.com) <sub><sup>([Configuration](#gitlab-on-premise-beta))</sup></sub>
 - [BuddyBuild](https://buddybuild.com) <sub><sup>([Configuration](#buddybuild))</sup></sub>
+- [Bamboo](https://www.atlassian.com/software/bamboo) <sub><sup>([Configuration](#bamboo))</sup></sub>
 
 Feel free to make a [Fork](https://github.com/marcells/node-build-monitor/fork) of this repository and add another service.
 
@@ -178,7 +180,7 @@ To create the alternate credentials, please do the following steps:
 
 Get more information about OData and the different account/user name on [https://tfsodata.visualstudio.com/](https://tfsodata.visualstudio.com/).
 
-#### Team Foundation Server (on-premise)
+#### Team Foundation Server 2013 and lower (on-premise)
 
 Supports an on-premise Microsoft Team Foundation Server via the [tfs-proxy](https://github.com/marcells/tfs-proxy) bridge.
 
@@ -201,9 +203,9 @@ Supports an on-premise Microsoft Team Foundation Server via the [tfs-proxy](http
 | `username`    | User with permission to query build details
 | `password`    | The password for the user
 
-#### Team Foundation Server 2015 (on-premise)
+#### Team Foundation Server 2015/2017 (on-premise)
 
-Supports an on-premise Microsoft Team Foundation Server 2015 (and later).
+Supports an on-premise Microsoft Team Foundation Server 2015/2017 (and later).
 
 ```json
 {
@@ -220,7 +222,11 @@ Supports an on-premise Microsoft Team Foundation Server 2015 (and later).
 |---------------|-------------------------------------------------------------------------------------
 | `url`         | The full Team Collection Url, including the TeamProject, which builds are displayed
 | `username`    | User with permission to query build details
-| `password`    | The password for the user
+| `password`    | The password for the user (if using TFS 2017 see notes below)
+
+_Important_: For TFS 2017 you have to [create a personal access token](https://www.visualstudio.com/en-us/docs/setup-admin/team-services/use-personal-access-tokens-to-authenticate). It only needs
+the permission to read builds. Please use your username and the generated token as the password.
+
 
 #### GitLab (on-premise, beta)
 
@@ -282,6 +288,29 @@ Supports [BuddyBuild](https://buddybuild.com/) build service
 | `access_token`   | Secret token string for the existing user to be used to authenticate against BuddyBuild REST API (if `BUILDBUDDY_ACCESS_TOKEN` environment variable is set, this setting is overwritten)
 | `build_id`       | Leave empty to get the latest build. Provide the build ID to query that specific build.
 | `branch`         | Name of the branch
+
+#### Bamboo
+
+Supports [Bamboo](https://www.atlassian.com/software/bamboo) build service
+
+```json
+{
+  "name": "Bamboo",
+  "configuration": {
+    "url": "http://yourbamboo.com",
+    "planKey": "Plan-Key",
+    "username": "user",
+    "password": "pass"
+  }
+}
+```
+
+| Setting          | Description
+|------------------|------------------------------------
+| `url`            | URL of the Bamboo host
+| `planKey`        | Plan-Key
+| `username`       | HTTP-Basic-Auth Username (optional)
+| `password`       | HTTP-Basic-Auth Password (optional)
 
 ### Run it with Docker (in production)
 
@@ -427,7 +456,7 @@ fi
 
 The MIT License (MIT)
 
-Copyright (c) 2015 Marcell Spies ([@marcells](https://twitter.com/marcells) | http://mspi.es)
+Copyright (c) 2017 Marcell Spies ([@marcells](https://twitter.com/marcells) | http://mspi.es)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
